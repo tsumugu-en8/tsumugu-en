@@ -26,7 +26,7 @@ body.menu-open::before{content:none!important}.menu-backdrop{position:fixed;z-in
 @media(prefers-reduced-motion:reduce){.hero-slide{transform:none;transition:none}.menu-backdrop{transition:none}}
 
 /* Desktop hero follows the supplied design reference: copy left, photo right. */
-@media(min-width:768px){.hero--slider{height:620px;min-height:620px;background:linear-gradient(90deg,#fff 0 46%,#fff8f3 46%)}.hero--slider::after{position:absolute;z-index:4;right:0;bottom:-1px;left:0;display:block;height:106px;background:url("../images/hero-wave-smooth.svg?v=1") left bottom/100% 100% no-repeat;content:"";pointer-events:none}.hero-slides{right:0;left:46%;width:54%;height:100%}.hero-slide{object-position:center}.hero-overlay{z-index:3;right:auto;bottom:122px;left:max(40px,calc((100vw - 1180px)/2));width:min(40vw,510px);filter:none}.hero-dots{right:34px;bottom:78px}}
+@media(min-width:768px){.hero--slider{height:620px;min-height:620px;background:linear-gradient(90deg,#fff 0 46%,#fff8f3 46%)}.hero--slider::after{position:absolute;z-index:4;right:0;bottom:-1px;left:0;display:block;height:82px;border-radius:0;background:url("../images/hero-wave-smooth.svg?v=2") left bottom/100% 100% no-repeat;content:"";pointer-events:none}.hero-slides{right:0;left:46%;width:54%;height:100%}.hero-slide{object-position:center}.hero-overlay{z-index:3;right:auto;bottom:165px;left:max(40px,calc((100vw - 1180px)/2));width:min(40vw,510px);filter:none}.hero-dots{right:34px;bottom:78px}.section{padding:82px 0}.hero--slider+.section{padding-top:66px}.content-section{padding:68px 0}}
 @media(min-width:1200px){.hero--slider{height:650px;min-height:650px}.hero-overlay{width:min(37vw,490px)}.hero-slide{object-position:center 42%}}
 @media(max-width:767px){.hero--slider::after{display:none}.hero-overlay{right:auto;bottom:72px;left:50%;width:min(90vw,360px);transform:translateX(-50%);filter:none}.hero-dots{bottom:48px}}
 
@@ -41,3 +41,13 @@ body.menu-open::before{content:none!important}.menu-backdrop{position:fixed;z-in
 .map-link:hover{color:var(--pink)}
 @media(max-width:1100px){.site-header .brand{width:255px;height:68px}}
 @media(max-width:767px){.site-header .brand{width:190px;height:56px}.footer-info .brand{width:260px;height:78px}.map-frame{height:330px}}
+
+/* Watercolor illustration system inspired by the approved rough. */
+.paw{display:inline-block;width:1.08em;height:1.08em;margin-left:.12em;background:url("../images/feature-icon-paw.png") center/contain no-repeat;font-size:0;vertical-align:-.14em}
+.page-hero h1::after{display:inline-block;width:.78em;height:.78em;margin-left:.3em;background:url("../images/feature-icon-paw.png") center/contain no-repeat;content:"";vertical-align:.02em}
+.line-icon{width:88px;height:76px;border-radius:0;background:transparent}
+.line-icon img{width:100%;height:100%;object-fit:contain}
+.recommend-box img{mix-blend-mode:normal}
+.footer-dog{display:block}
+.footer-dog img{width:100%;max-width:280px;object-fit:contain}
+@media(max-width:767px){.line-icon{width:70px;height:62px}.footer-dog img{max-width:220px}.page-hero h1::after{width:.72em;height:.72em}}
