@@ -1,0 +1,10 @@
+{
+  "name": "tsumugu-en",
+  "version": "1.0.0",
+  "private": true,
+  "description": "紡 -tsumugu- 公式Webサイト",
+  "dependencies": {
+    "@netlify/blobs": "9.1.5",
+    "@netlify/identity": "1.2.0"
+  }
+}

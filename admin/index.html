@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>お知らせ管理 | 紡 -tsumugu-</title>
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="admin.js" defer></script>
+</head>
+<body>
+  <header class="admin-header">
+    <div>
+      <p>紡 -tsumugu-</p>
+      <h1>お知らせ管理</h1>
+    </div>
+    <div class="header-actions">
+      <a href="../news.html" target="_blank" rel="noopener">公開ページを見る</a>
+      <button type="button" class="link-button" data-logout hidden>ログアウト</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="login-panel" data-login-panel>
+      <h2>管理者ログイン</h2>
+      <p>招待されたメールアドレスと、登録したパスワードでログインしてください。</p>
+      <button type="button" class="primary-button" data-login>ログイン</button>
+    </section>
+
+    <div class="admin-content" data-admin-content hidden>
+      <p class="status" data-status role="status" aria-live="polite"></p>
+
+      <section class="editor-panel">
+        <h2 data-form-title>新しいお知らせを登録</h2>
+        <form data-news-form>
+          <input type="hidden" name="id">
+          <label>公開日<span>必須</span><input type="date" name="date" required></label>
+          <label>カテゴリー<span>必須</span>
+            <select name="category" required>
+              <option value="お知らせ">お知らせ</option>
+              <option value="見学・体験">見学・体験</option>
+              <option value="求人情報">求人情報</option>
+            </select>
+          </label>
+          <label class="full">タイトル<span>必須</span><input type="text" name="title" maxlength="120" required></label>
+          <label class="full">本文<span>必須</span><textarea name="body" rows="10" maxlength="10000" required></textarea><small>段落を分ける場合は、間に空行を入れてください。</small></label>
+          <div class="form-actions full">
+            <button type="button" class="secondary-button" data-cancel hidden>編集をやめる</button>
+            <button type="submit" class="primary-button" data-submit>登録する</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="list-panel">
+        <div class="panel-heading">
+          <h2>登録済みのお知らせ</h2>
+          <button type="button" class="secondary-button" data-export>バックアップを保存</button>
+        </div>
+        <div data-admin-list><p>読み込み中です…</p></div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

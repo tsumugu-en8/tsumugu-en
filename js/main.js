@@ -1,5 +1,9 @@
 document.documentElement.style.overflowX = 'hidden';
 
+if (/^#(?:invite_token|recovery_token|confirmation_token)=/.test(window.location.hash)) {
+  window.location.replace(`/admin/${window.location.hash}`);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.body.style.overflowX = 'hidden';
   const menuButton = document.querySelector('.menu-toggle');
