@@ -50,4 +50,6 @@ body.menu-open::before{content:none!important}.menu-backdrop{position:fixed;z-in
 .recommend-box img{mix-blend-mode:normal}
 .footer-dog{display:block}
 .footer-dog img{width:100%;max-width:280px;object-fit:contain}
+.faq-answer p{margin:0}.faq-answer p+p{margin-top:.75em}
+.form-error{margin:20px 0 0;padding:12px 16px;border-radius:10px;color:#8b3344;background:#fff0f2;font-weight:700;text-align:center}
 @media(max-width:767px){.line-icon{width:70px;height:62px}.footer-dog img{max-width:220px}.page-hero h1::after{width:.72em;height:.72em}}

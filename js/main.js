@@ -108,9 +108,34 @@ document.addEventListener('DOMContentLoaded', () => {
         form.hidden = false;
         form.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
-      confirmArea.querySelector('[data-send]').addEventListener('click', () => {
-        form.dataset.confirmed = 'true';
-        form.requestSubmit();
+      confirmArea.querySelector('[data-send]').addEventListener('click', async (event) => {
+        const sendButton = event.currentTarget;
+        sendButton.disabled = true;
+        sendButton.textContent = '送信中…';
+
+        try {
+          const response = await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(new FormData(form)).toString()
+          });
+
+          if (!response.ok) throw new Error(`Form submission failed: ${response.status}`);
+          window.location.assign('/thanks.html');
+        } catch (error) {
+          console.error(error);
+          let errorMessage = confirmArea.querySelector('[data-form-error]');
+          if (!errorMessage) {
+            errorMessage = document.createElement('p');
+            errorMessage.dataset.formError = '';
+            errorMessage.setAttribute('role', 'alert');
+            errorMessage.className = 'form-error';
+            confirmArea.appendChild(errorMessage);
+          }
+          errorMessage.textContent = '送信できませんでした。時間をおいて再度お試しいただくか、お電話でお問い合わせください。';
+          sendButton.disabled = false;
+          sendButton.textContent = 'この内容で送信する';
+        }
       });
     });
   }
