@@ -1,29 +1,109 @@
+import {
+  acceptInvite,
+  getUser,
+  handleAuthCallback,
+  login,
+  logout
+} from 'https://cdn.jsdelivr.net/npm/@netlify/identity@1.2.0/+esm';
+
 const API_URL = '/.netlify/functions/news';
 let newsItems = [];
+let inviteToken = '';
 
-document.addEventListener('DOMContentLoaded', () => {
-  if (!window.netlifyIdentity) {
-    showFatalError('ログイン機能を読み込めませんでした。通信環境をご確認ください。');
-    return;
-  }
+document.addEventListener('DOMContentLoaded', initialize);
 
-  netlifyIdentity.init();
-  netlifyIdentity.on('init', updateAuthView);
-  netlifyIdentity.on('login', (user) => {
-    netlifyIdentity.close();
-    updateAuthView(user);
-  });
-  netlifyIdentity.on('logout', () => updateAuthView(null));
-
-  document.querySelector('[data-login]').addEventListener('click', () => netlifyIdentity.open('login'));
-  document.querySelector('[data-logout]').addEventListener('click', () => netlifyIdentity.logout());
+async function initialize() {
+  document.querySelector('[data-login-form]').addEventListener('submit', submitLogin);
+  document.querySelector('[data-invite-form]').addEventListener('submit', submitInvite);
+  document.querySelector('[data-logout]').addEventListener('click', submitLogout);
   document.querySelector('[data-news-form]').addEventListener('submit', saveNews);
   document.querySelector('[data-cancel]').addEventListener('click', resetForm);
   document.querySelector('[data-export]').addEventListener('click', exportBackup);
-});
+
+  try {
+    const callback = await handleAuthCallback();
+    if (callback?.type === 'invite' && callback.token) {
+      inviteToken = callback.token;
+      showAuthPanel('invite');
+      return;
+    }
+    updateAuthView(await getUser());
+  } catch (error) {
+    showAuthPanel('login');
+    showAuthError('[data-login-error]', authMessage(error));
+  }
+}
+
+async function submitInvite(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const password = form.elements.password.value;
+  const confirmation = form.elements.passwordConfirm.value;
+  const button = form.querySelector('button[type="submit"]');
+  showAuthError('[data-invite-error]', '');
+
+  if (!inviteToken) {
+    showAuthError('[data-invite-error]', '招待情報を確認できません。新しい招待メールからもう一度お試しください。');
+    return;
+  }
+  if (password !== confirmation) {
+    showAuthError('[data-invite-error]', '確認用パスワードが一致しません。');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = '登録中…';
+  try {
+    const user = await acceptInvite(inviteToken, password);
+    inviteToken = '';
+    form.reset();
+    updateAuthView(user);
+    showStatus('パスワードを登録しました。お知らせ管理をご利用いただけます。');
+  } catch (error) {
+    showAuthError('[data-invite-error]', authMessage(error));
+  } finally {
+    button.disabled = false;
+    button.textContent = 'パスワードを登録する';
+  }
+}
+
+async function submitLogin(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = form.querySelector('button[type="submit"]');
+  showAuthError('[data-login-error]', '');
+  button.disabled = true;
+  button.textContent = 'ログイン中…';
+  try {
+    const user = await login(form.elements.email.value, form.elements.password.value);
+    form.reset();
+    updateAuthView(user);
+  } catch (error) {
+    showAuthError('[data-login-error]', authMessage(error));
+  } finally {
+    button.disabled = false;
+    button.textContent = 'ログイン';
+  }
+}
+
+async function submitLogout() {
+  try {
+    await logout();
+  } finally {
+    updateAuthView(null);
+  }
+}
+
+function showAuthPanel(panel) {
+  document.querySelector('[data-invite-panel]').hidden = panel !== 'invite';
+  document.querySelector('[data-login-panel]').hidden = panel !== 'login';
+  document.querySelector('[data-admin-content]').hidden = true;
+  document.querySelector('[data-logout]').hidden = true;
+}
 
 function updateAuthView(user) {
   const isLoggedIn = Boolean(user);
+  document.querySelector('[data-invite-panel]').hidden = true;
   document.querySelector('[data-login-panel]').hidden = isLoggedIn;
   document.querySelector('[data-admin-content]').hidden = !isLoggedIn;
   document.querySelector('[data-logout]').hidden = !isLoggedIn;
@@ -34,13 +114,12 @@ function updateAuthView(user) {
 }
 
 async function request(method = 'GET', body) {
-  const user = netlifyIdentity.currentUser();
   const headers = { Accept: 'application/json' };
   if (body) headers['Content-Type'] = 'application/json';
-  if (user) headers.Authorization = `Bearer ${await user.jwt()}`;
   const response = await fetch(API_URL, {
     method,
     headers,
+    credentials: 'same-origin',
     body: body ? JSON.stringify(body) : undefined
   });
   const result = await response.json().catch(() => ({}));
@@ -159,9 +238,15 @@ function showStatus(message, isError = false) {
   status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-function showFatalError(message) {
-  const panel = document.querySelector('[data-login-panel]');
-  panel.innerHTML = `<h2>エラー</h2><p>${escapeAdminHtml(message)}</p>`;
+function showAuthError(selector, message) {
+  document.querySelector(selector).textContent = message;
+}
+
+function authMessage(error) {
+  const message = String(error?.message || '認証処理に失敗しました。');
+  if (/invalid login|invalid.*credentials|email or password/i.test(message)) return 'メールアドレスまたはパスワードが正しくありません。';
+  if (/expired|invalid.*token/i.test(message)) return '招待リンクの有効期限が切れているか、すでに使用されています。新しい招待メールからお試しください。';
+  return message;
 }
 
 function formatAdminDate(value) {

@@ -7,8 +7,7 @@
   <title>お知らせ管理 | 紡 -tsumugu-</title>
   <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin.css">
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="admin.js" defer></script>
+  <script type="module" src="admin.js"></script>
 </head>
 <body>
   <header class="admin-header">
@@ -23,10 +22,26 @@
   </header>
 
   <main>
-    <section class="login-panel" data-login-panel>
+    <section class="login-panel" data-invite-panel hidden>
+      <h2>パスワードを登録</h2>
+      <p>管理画面で使用するパスワードを設定してください。</p>
+      <form data-invite-form>
+        <label>新しいパスワード<input type="password" name="password" minlength="8" autocomplete="new-password" required></label>
+        <label>パスワード（確認）<input type="password" name="passwordConfirm" minlength="8" autocomplete="new-password" required></label>
+        <p class="auth-error" data-invite-error role="alert"></p>
+        <button type="submit" class="primary-button">パスワードを登録する</button>
+      </form>
+    </section>
+
+    <section class="login-panel" data-login-panel hidden>
       <h2>管理者ログイン</h2>
       <p>招待されたメールアドレスと、登録したパスワードでログインしてください。</p>
-      <button type="button" class="primary-button" data-login>ログイン</button>
+      <form data-login-form>
+        <label>メールアドレス<input type="email" name="email" autocomplete="username" required></label>
+        <label>パスワード<input type="password" name="password" autocomplete="current-password" required></label>
+        <p class="auth-error" data-login-error role="alert"></p>
+        <button type="submit" class="primary-button">ログイン</button>
+      </form>
     </section>
 
     <div class="admin-content" data-admin-content hidden>
